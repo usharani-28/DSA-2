@@ -1,0 +1,105 @@
+import java.util.*;
+
+public class SmartCityRoadNetwork1 {
+
+    static final int V = 5;
+
+    void BFS(int graph[][],
+             int start) {
+
+        boolean visited[] =
+            new boolean[V];
+
+        Queue<Integer> queue =
+            new LinkedList<>();
+
+        visited[start] = true;
+
+        queue.add(start);
+
+        while(!queue.isEmpty()) {
+
+            int node = queue.poll();
+
+            System.out.print(node + " ");
+
+            for(int i = 0; i < V; i++) {
+
+                if(graph[node][i] == 1
+                   && !visited[i]) {
+
+                    visited[i] = true;
+
+                    queue.add(i);
+                }
+            }
+        }
+    }
+
+    void DFS(int graph[][],
+             int node,
+             boolean visited[]) {
+
+        visited[node] = true;
+
+        System.out.print(node + " ");
+
+        for(int i = 0; i < V; i++) {
+
+            if(graph[node][i] == 1
+               && !visited[i]) {
+
+                DFS(graph,
+                    i,
+                    visited);
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        SmartCityRoadNetwork g =
+            new SmartCityRoadNetwork();
+
+        int graph[][] =
+            new int[V][V];
+
+        System.out.println(
+            "Enter Adjacency Matrix:");
+
+        for(int i = 0; i < V; i++) {
+
+            for(int j = 0; j < V; j++) {
+
+                graph[i][j] =
+                    sc.nextInt();
+            }
+        }
+
+        System.out.print(
+            "Enter starting vertex: ");
+
+        int start = sc.nextInt();
+
+        System.out.println(
+            "BFS Traversal:");
+
+        g.BFS(graph, start);
+
+        System.out.println();
+
+        System.out.println(
+            "DFS Traversal:");
+
+        boolean visited[] =
+            new boolean[V];
+
+        g.DFS(graph,
+              start,
+              visited);
+
+        sc.close();
+    }
+}

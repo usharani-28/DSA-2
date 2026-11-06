@@ -1,0 +1,148 @@
+import java.util.*;
+
+public class BMTCBellmanFord {
+
+    static class Edge {
+        int u, v, weight;
+
+        Edge(int u, int v, int weight) {
+            this.u = u;
+            this.v = v;
+            this.weight = weight;
+        }
+    }
+
+    static final int INF = Integer.MAX_VALUE;
+
+    static int[] bellmanFord(int n, List<Edge> edges, int source) {
+
+        int[] dist = new int[n];
+        Arrays.fill(dist, INF);
+        dist[source] = 0;
+
+        System.out.println("Iteration 0:");
+        printDistances(dist);
+
+        // V-1 relaxations
+        for (int iter = 1; iter <= n - 1; iter++) {
+
+            boolean updated = false;
+
+            for (Edge e : edges) {
+
+                if (dist[e.u] != INF &&
+                        dist[e.u] + e.weight < dist[e.v]) {
+
+                    dist[e.v] = dist[e.u] + e.weight;
+                    updated = true;
+                }
+            }
+
+            System.out.println("Iteration " + iter + ":");
+            printDistances(dist);
+
+            if (!updated) {
+                System.out.println(
+                        "\nConverged early at iteration " + iter);
+                break;
+            }
+        }
+
+        // Negative cycle detection
+        for (Edge e : edges) {
+            if (dist[e.u] != INF &&
+                    dist[e.u] + e.weight < dist[e.v]) {
+
+                throw new RuntimeException(
+                        "Negative cycle reachable from source!");
+            }
+        }
+
+        return dist;
+    }
+
+    static void printDistances(int[] dist) {
+
+        String[] hubs = {
+                "MJC", "KEM", "JAY",
+                "KOR", "WHF", "HBR", "MRT"
+        };
+
+        for (int i = 0; i < dist.length; i++) {
+
+            System.out.print(hubs[i] + "=");
+
+            if (dist[i] == INF)
+                System.out.print("INF");
+            else
+                System.out.print(dist[i]);
+
+            if (i != dist.length - 1)
+                System.out.print("  ");
+        }
+
+        System.out.println();
+    }
+
+    public static void main(String[] args) {
+
+        String[] hubs = {
+                "MJC", "KEM", "JAY",
+                "KOR", "WHF", "HBR", "MRT"
+        };
+
+        int MJC = 0;
+        int KEM = 1;
+        int JAY = 2;
+        int KOR = 3;
+        int WHF = 4;
+        int HBR = 5;
+        int MRT = 6;
+
+        List<Edge> edges = new ArrayList<>();
+
+        // BMTC route graph (11 directed edges)
+
+        edges.add(new Edge(MJC, KEM, 8));
+        edges.add(new Edge(MJC, JAY, 5));
+
+        edges.add(new Edge(KEM, KOR, 12));
+        edges.add(new Edge(JAY, KOR, 7));
+
+        edges.add(new Edge(JAY, HBR, 10));
+        edges.add(new Edge(KEM, HBR, 3));
+
+        edges.add(new Edge(KOR, WHF, 4));
+        edges.add(new Edge(KOR, MRT, 9));
+
+        edges.add(new Edge(HBR, WHF, 6));
+        edges.add(new Edge(WHF, MRT, -3)); // Negative edge
+
+        edges.add(new Edge(HBR, MRT, 11));
+
+        System.out.println("=================================");
+        System.out.println("BMTC Bellman-Ford Shortest Paths");
+        System.out.println("Source Hub : MJC");
+        System.out.println("=================================\n");
+
+        int[] dist = bellmanFord(7, edges, MJC);
+
+        System.out.println("\nFinal Shortest Distances from MJC:");
+        System.out.println("-----------------------------------");
+
+        for (int i = 0; i < hubs.length; i++) {
+
+            System.out.print("MJC -> " + hubs[i] + " = ");
+
+            if (dist[i] == INF)
+                System.out.println("INF");
+            else
+                System.out.println(dist[i] + " minutes");
+        }
+
+        System.out.println("\nTime Complexity:");
+        System.out.println("Bellman-Ford = O(V * E)");
+        System.out.println("For V = 7 and E = 11");
+        System.out.println("Approx operations = 7 * 11 = 77");
+    }
+}

@@ -1,0 +1,115 @@
+import java.util.Scanner;
+
+class FenwickTree {
+
+    int[] BIT;
+    int n;
+
+    FenwickTree(int size) {
+
+        n = size;
+
+        BIT = new int[n + 1];
+    }
+
+    void update(int index,
+                int value) {
+
+        while(index <= n) {
+
+            BIT[index] += value;
+
+            index +=
+                index & (-index);
+        }
+    }
+
+    int query(int index) {
+
+        int sum = 0;
+
+        while(index > 0) {
+
+            sum += BIT[index];
+
+            index -=
+                index & (-index);
+        }
+
+        return sum;
+    }
+
+    int rangeQuery(int left,
+                   int right) {
+
+        return query(right)
+             - query(left - 1);
+    }
+}
+
+public class UniversityResultSystem1 {
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print(
+            "Enter number of students: ");
+
+        int n = sc.nextInt();
+
+        FenwickTree ft =
+            new FenwickTree(n);
+
+        System.out.println(
+            "Enter student marks:");
+
+        for(int i = 1; i <= n; i++) {
+
+            int marks = sc.nextInt();
+
+            ft.update(i, marks);
+        }
+
+        System.out.print(
+            "Enter index for prefix sum: ");
+
+        int prefix = sc.nextInt();
+
+        System.out.println(
+            "Prefix Sum: "
+            + ft.query(prefix));
+
+        System.out.print(
+            "Enter left range: ");
+
+        int left = sc.nextInt();
+
+        System.out.print(
+            "Enter right range: ");
+
+        int right = sc.nextInt();
+
+        System.out.println(
+            "Range Sum: "
+            + ft.rangeQuery(left, right));
+
+        System.out.print(
+            "Enter index to update: ");
+
+        int index = sc.nextInt();
+
+        System.out.print(
+            "Enter updated marks: ");
+
+        int value = sc.nextInt();
+
+        ft.update(index, value);
+
+        System.out.println(
+            "Updated Prefix Sum: "
+            + ft.query(prefix));
+
+        sc.close();
+    }
+}

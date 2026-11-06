@@ -1,0 +1,65 @@
+import java.util.*;
+
+public class KWayMerge {
+
+    static class Node {
+        int value;
+        int row;
+        int col;
+
+        Node(int value, int row, int col) {
+            this.value = value;
+            this.row = row;
+            this.col = col;
+        }
+    }
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        int k = sc.nextInt(); // number of chunks
+        int n = sc.nextInt(); // elements in each chunk
+
+        int[][] chunks = new int[k][n];
+
+        for (int i = 0; i < k; i++) {
+            for (int j = 0; j < n; j++) {
+                chunks[i][j] = sc.nextInt();
+            }
+        }
+
+        PriorityQueue<Node> pq = new PriorityQueue<>(
+                (a, b) -> Integer.compare(a.value, b.value));
+
+        // Insert first element of each chunk
+        for (int i = 0; i < k; i++) {
+            pq.add(new Node(chunks[i][0], i, 0));
+        }
+
+        ArrayList<Integer> result = new ArrayList<>();
+
+        while (!pq.isEmpty()) {
+
+            Node curr = pq.poll();
+            result.add(curr.value);
+
+            int nextCol = curr.col + 1;
+
+            if (nextCol < n) {
+                pq.add(new Node(
+                        chunks[curr.row][nextCol],
+                        curr.row,
+                        nextCol));
+            }
+        }
+
+        System.out.println("Final merged output:");
+
+        for (int x : result) {
+            System.out.print(x + " ");
+        }
+
+        sc.close();
+    }
+}
